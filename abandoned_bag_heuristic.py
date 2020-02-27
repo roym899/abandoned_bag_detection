@@ -28,7 +28,8 @@ def extract_bag_to_ppl_vectors(boudning_boxes, labels):
     centers = compute_center(boudning_boxes)
     bag_centers, persons_centers = split_bag_persons(centers, labels)
     distances = cdist(bag_centers, persons_centers)
-    dist, ind = distances.min(axis=1)
+    ind = distances.argrmin(axis=1)
+    dist = distances[np.arange(len(ind)), ind]
     return dist, ind
 
 
