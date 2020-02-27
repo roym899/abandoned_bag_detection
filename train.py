@@ -17,7 +17,8 @@ cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_1
 cfg.DATASETS.TRAIN = ("person_bag_train",)
 cfg.DATASETS.TEST = ("person_bag_val",)
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = 2  # only has two classes (person and bag)
-
+cfg.SOLVER.IMS_PER_BATCH = 2
+cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 32   # faster, and good enough for this toy dataset (default: 512)
 trainer = DefaultTrainer(cfg) 
 trainer.resume_or_load(resume=False)
 trainer.train()

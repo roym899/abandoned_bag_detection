@@ -46,6 +46,7 @@ def get_image_folder(dataset, split):
     
 
 def main():
+    id_counter = 0
     for split in SPLITS:
         # create coco format json
         output_data = {'info': {},
@@ -96,10 +97,14 @@ def main():
                     if annotation['category_id'] in get_person_ids_for_dataset(dataset):
                         output_data['annotations'].append(annotation)
                         output_data['annotations'][-1]['category_id'] = PERSON_ID
+                        output_data['annotations'][-1]['id'] = id_counter
+                        id_counter += 1
                         filtered_image_ids.add(annotation['image_id'])
                     elif annotation['category_id'] in get_bag_ids_for_dataset(dataset):
                         output_data['annotations'].append(annotation)
                         output_data['annotations'][-1]['category_id'] = BAG_ID
+                        output_data['annotations'][-1]['id'] = id_counter
+                        id_counter += 1
                         filtered_image_ids.add(annotation['image_id'])
                 
                 # go through the filtered images
