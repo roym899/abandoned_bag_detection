@@ -1,21 +1,24 @@
 
 import numpy as np
 
+BAG_LABEL = 28
+PERSON_LABEL = 0
 
-def split_bag_persons(boudning_boxes, labels):
+def split_bag_persons(centers, labels):
 
-    bag_bounding_boxes = boudning_boxes[labels == 'bag']
-    persons_bounding_boxes = boudning_boxes[labels == 'person']
+    bag_bounding_centers = centers[labels == BAG_LABEL]
+    persons_bounding_centers = centers[labels == PERSON_LABEL]
 
-    return bag_bounding_boxes, persons_bounding_boxes
+    return bag_bounding_centers, persons_bounding_centers
 
 
 def compute_center(bounding_boxes):
     x_dist = bounding_boxes[:, 2] - bounding_boxes[:, 0]
     y_dist = bounding_boxes[:, 3] - bounding_boxes[:, 1]
-    centers = bounding_boxes[:, 0:2] + 0.5 * np.stack(x_dist, y_dist, axis=1)
+    centers = bounding_boxes[:, 0:2] + 0.5 * np.stack((x_dist, y_dist), axis=1)
     return centers
 
-def extract_bag_to_ppl_vectors(bag_bounding_boxes, persons_bounding_boxes):
+def extract_bag_to_ppl_vectors(boudning_boxes, labels):
 
-    centers =
+    centers = compute_center(boudning_boxes)
+    bag_centers, persons_centers = split_bag_persons(centers, labels)
