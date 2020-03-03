@@ -98,7 +98,7 @@ class VisualizationDemo(object):
                 )
             elif "instances" in predictions:
                 predictions = predictions["instances"].to(self.cpu_device)
-                tracker.update(boxes=predictions.pred_boxes.tensor.numpy(), labels=predictions.pred_classes.numpy())
+                # tracker.update(boxes=predictions.pred_boxes.tensor.numpy(), labels=predictions.pred_classes.numpy())
                 vis_frame = video_visualizer.draw_instance_predictions(frame, predictions)
             elif "sem_seg" in predictions:
                 vis_frame = video_visualizer.draw_sem_seg(
