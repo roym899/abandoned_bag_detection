@@ -17,8 +17,6 @@ SAVED_PREDICTIONS = []
 
 import pickle
 
-ITER = 0
-
 class VisualizationDemo(object):
     def __init__(self, cfg, instance_mode=ColorMode.IMAGE, parallel=False):
         """
@@ -104,14 +102,13 @@ class VisualizationDemo(object):
             elif "instances" in predictions:
                 predictions = predictions["instances"].to(self.cpu_device)
                 # tracker.update(boxes=predictions.pred_boxes.tensor.numpy(), labels=predictions.pred_classes.numpy())
-                if ITER < 100 :
-                    SAVED_PREDICTIONS.append(predictions)
-                    if ITER == 99 :
-                        with open('predictions.pkl', 'w') as fp:
-                            pickle.dump(SAVED_PREDICTIONS, fp)
-                            print('Saving done!')
+
+                SAVED_PREDICTIONS.append(predictions)
+                if len(SAVED_PREDICTIONS) == 100:
+                    with open('predictions.pkl', 'w') as fp:
+                        pickle.dump(SAVED_PREDICTIONS, fp)
+                        print('Saving done!')
                 vis_frame = video_visualizer.draw_instance_predictions(frame, predictions)
-                ITER +=1
             elif "sem_seg" in predictions:
                 vis_frame = video_visualizer.draw_sem_seg(
                     frame, predictions["sem_seg"].argmax(dim=0).to(self.cpu_device)
