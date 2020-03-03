@@ -7,8 +7,8 @@ import time
 import cv2
 import tqdm
 
-from abandoned_bag_heuristic import SimpleDetector
 
+from detectron2.data.datasets import register_coco_instances
 from detectron2.config import get_cfg
 from detectron2.data.detection_utils import read_image
 from detectron2.utils.logger import setup_logger
@@ -18,6 +18,8 @@ from predictor import VisualizationDemo
 # constants
 WINDOW_NAME = "COCO detections"
 
+register_coco_instances("person_bag_train", {}, "/home/leo/datasets/person_bag/annotations/train.json", "/home/leo/datasets/person_bag/images/train/")
+register_coco_instances("person_bag_val", {}, "/home/leo/datasets/person_bag/annotations/val.json", "/home/leo/datasets/person_bag/images/val/")
 
 def setup_cfg(args):
     # load config from file and command-line arguments
@@ -28,6 +30,8 @@ def setup_cfg(args):
     cfg.MODEL.RETINANET.SCORE_THRESH_TEST = args.confidence_threshold
     cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = args.confidence_threshold
     cfg.MODEL.PANOPTIC_FPN.COMBINE.INSTANCES_CONFIDENCE_THRESH = args.confidence_threshold
+    cfg.DATASETS.TRAIN = ("person_bag_train",)
+    cfg.DATASETS.TEST = ("person_bag_val",)
     cfg.freeze()
     return cfg
 
