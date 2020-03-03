@@ -13,6 +13,7 @@ from detectron2.engine.defaults import DefaultPredictor
 from detectron2.utils.video_visualizer import VideoVisualizer
 from detectron2.utils.visualizer import ColorMode, Visualizer
 
+SAVE_PREDICTIONS = False
 SAVED_PREDICTIONS = []
 
 import pickle
@@ -103,11 +104,12 @@ class VisualizationDemo(object):
                 predictions = predictions["instances"].to(self.cpu_device)
                 # tracker.update(boxes=predictions.pred_boxes.tensor.numpy(), labels=predictions.pred_classes.numpy())
 
-                SAVED_PREDICTIONS.append(predictions)
-                if len(SAVED_PREDICTIONS) == 100:
-                    with open('predictions.pkl', 'wb') as fp:
-                        pickle.dump(SAVED_PREDICTIONS, fp)
-                        print('Saving done!')
+                if SAVE_PREDICTIONS:
+                    SAVED_PREDICTIONS.append(predictions)
+                    if len(SAVED_PREDICTIONS) == 100:
+                        with open('predictions.pkl', 'wb') as fp:
+                            pickle.dump(SAVED_PREDICTIONS, fp)
+                            print('Saving done!')
                 vis_frame = video_visualizer.draw_instance_predictions(frame, predictions)
             elif "sem_seg" in predictions:
                 vis_frame = video_visualizer.draw_sem_seg(
