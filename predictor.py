@@ -49,8 +49,6 @@ class VisualizationDemo(object):
         """
         vis_output = None
         predictions = self.predictor(image)
-        print(type(predictions))
-        self.tracker.update(boxes=predictions[0], labels=predictions[1])
         # Convert image from OpenCV BGR format to Matplotlib RGB format.
         image = image[:, :, ::-1]
         visualizer = Visualizer(image, self.metadata, instance_mode=self.instance_mode)
@@ -91,8 +89,9 @@ class VisualizationDemo(object):
         """
         video_visualizer = VideoVisualizer(self.metadata, self.instance_mode)
 
-        def process_predictions(frame, predictions):
+        def process_predictions(frame, predictions, tracker):
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+            tracker.update(boxes=predictions.pred_boxes.tensor.numpy(), labels=predictions.pred_classes.numpy())
             if "panoptic_seg" in predictions:
                 panoptic_seg, segments_info = predictions["panoptic_seg"]
                 vis_frame = video_visualizer.draw_panoptic_seg_predictions(
@@ -123,15 +122,15 @@ class VisualizationDemo(object):
                 if cnt >= buffer_size:
                     frame = frame_data.popleft()
                     predictions = self.predictor.get()
-                    yield process_predictions(frame, predictions)
+                    yield process_predictions(frame, predictions, self.tracker)
 
             while len(frame_data):
                 frame = frame_data.popleft()
                 predictions = self.predictor.get()
-                yield process_predictions(frame, predictions)
+                yield process_predictions(frame, predictions, self.tracker)
         else:
             for frame in frame_gen:
-                yield process_predictions(frame, self.predictor(frame))
+                yield process_predictions(frame, self.predictor(frame), self.tracker)
 
 
 class AsyncPredictor:
