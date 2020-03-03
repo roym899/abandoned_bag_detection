@@ -7,6 +7,7 @@ import time
 import cv2
 import tqdm
 
+from detectron2.data import MetadataCatalog
 
 from detectron2.data.datasets import register_coco_instances
 from detectron2.config import get_cfg
@@ -18,8 +19,11 @@ from predictor import VisualizationDemo
 # constants
 WINDOW_NAME = "COCO detections"
 
-register_coco_instances("person_bag_train", {}, "/home/leo/datasets/person_bag/annotations/train.json", "/home/leo/datasets/person_bag/images/train/")
-register_coco_instances("person_bag_val", {}, "/home/leo/datasets/person_bag/annotations/val.json", "/home/leo/datasets/person_bag/images/val/")
+PERSON_BAG_META = {"thing_classes": ["person", "bag"]}
+
+register_coco_instances("person_bag_train", PERSON_BAG_META, "/home/leo/datasets/person_bag/annotations/train.json", "/home/leo/datasets/person_bag/images/train/")
+register_coco_instances("person_bag_val", PERSON_BAG_META, "/home/leo/datasets/person_bag/annotations/val.json", "/home/leo/datasets/person_bag/images/val/")
+
 
 def setup_cfg(args):
     # load config from file and command-line arguments
