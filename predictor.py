@@ -6,7 +6,7 @@ from collections import deque
 import cv2
 import torch
 
-from abandoned_bag_heuristic import SimpleDetector
+from abandoned_bag_heuristic import SimpleTracker
 
 from detectron2.data import MetadataCatalog
 from detectron2.engine.defaults import DefaultPredictor
@@ -30,6 +30,7 @@ class VisualizationDemo(object):
         self.instance_mode = instance_mode
 
         self.parallel = parallel
+        self.tracker = SimpleTracker(50, 100)
         if parallel:
             num_gpu = torch.cuda.device_count()
             self.predictor = AsyncPredictor(cfg, num_gpus=num_gpu)
@@ -48,6 +49,8 @@ class VisualizationDemo(object):
         """
         vis_output = None
         predictions = self.predictor(image)
+        print(type(predictions))
+        self.tracker.update(boxes=predictions[0], labels=predictions[1])
         # Convert image from OpenCV BGR format to Matplotlib RGB format.
         image = image[:, :, ::-1]
         visualizer = Visualizer(image, self.metadata, instance_mode=self.instance_mode)
