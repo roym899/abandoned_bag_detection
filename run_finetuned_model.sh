@@ -1,1 +1,1 @@
-python3 demo.py --config-file ../detectron2/configs/COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml --webcam --opts MODEL.WEIGHTS output/model_final.pth MODEL.ROI_HEADS.NUM_CLASSES 2
+python3 demo.py --config-file ../detectron2/configs/COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml --webcam --confidence-threshold 0.9 --opts MODEL.WEIGHTS output/model_final.pth MODEL.ROI_HEADS.NUM_CLASSES 2 
