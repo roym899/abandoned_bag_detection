@@ -3,7 +3,7 @@ from collections import OrderedDict
 import numpy as np
 from scipy.spatial.distance import cdist
 
-BAG_LABEL = 28
+BAG_LABEL = 1
 PERSON_LABEL = 0
 
 
