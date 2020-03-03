@@ -105,7 +105,7 @@ class VisualizationDemo(object):
 
                 SAVED_PREDICTIONS.append(predictions)
                 if len(SAVED_PREDICTIONS) == 100:
-                    with open('predictions.pkl', 'w') as fp:
+                    with open('predictions.pkl', 'wb') as fp:
                         pickle.dump(SAVED_PREDICTIONS, fp)
                         print('Saving done!')
                 vis_frame = video_visualizer.draw_instance_predictions(frame, predictions)
