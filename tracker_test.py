@@ -10,7 +10,7 @@ import pickle
 with open('predictions.pkl', 'rb') as fp:
     predictions = pickle.load(fp)
 
-dect = abh.SimpleTracker(50, 100)
+dect = abh.SimpleTracker(150, 100)
 
 for pred in predictions:
     dect.update(boxes=pred.pred_boxes.tensor.numpy(), labels=pred.pred_classes.numpy())
