@@ -72,10 +72,10 @@ class SimpleTracker:
 
             index_counter = Counter(new_frame_closest_centers)
 
-            for dist, prev_frame_id, new_center, index in zip(min_dist, 
-                                                            self.prev_frame_ids[tag],
-                                                            new_centers[new_frame_closest_centers], 
-                                                            new_frame_closest_centers):
+            for dist, prev_frame_id, new_center, index in zip(min_dist,
+                                                              self.prev_frame_ids[tag],
+                                                              new_centers[new_frame_closest_centers],
+                                                              new_frame_closest_centers):
 
                 if dist < self.self_association_thres and index_counter[index] <= 1:
                     # case where there is a unique closest center
@@ -97,7 +97,7 @@ class SimpleTracker:
         # add the new centers which were not closest to any old center
         for new_center in new_centers[new_frame_unused_centers, :]:
             self.all_centers[tag][self.instance_count[tag]] = new_center
-            frame_ids.append( self.instance_count[tag])
+            frame_ids.append(self.instance_count[tag])
             # print('create new', self.instance_count[tag])
             self.instance_count[tag] += 1
 
@@ -107,7 +107,7 @@ class SimpleTracker:
         else:
             pass
             # self.prev_frame_ids[tag] = np.zeros((0,))
-            
+
         print(frame_ids, self.prev_frame_ids[tag])
         print(self.all_centers[tag])
 
@@ -123,8 +123,8 @@ class SimpleTracker:
                 bag_person_vector = (self.all_centers['persons'][self.bag_person_association[bag_id]] -
                                      self.all_centers['bags'][bag_id])
                 self.bag_person_dist[bag_id] = np.sqrt(np.power(bag_person_vector, 2).sum())
-                print(bag_id, self.bag_person_dist[bag_id], self.bag_person_association[bag_id], self.all_centers['persons'][self.bag_person_association[bag_id]])
-               
+                print(bag_id, self.bag_person_dist[bag_id], self.bag_person_association[bag_id],
+                      self.all_centers['persons'][self.bag_person_association[bag_id]])
 
     def find_bag_owner(self, bag_id):
         bag_center = self.all_centers['bags'][bag_id]
