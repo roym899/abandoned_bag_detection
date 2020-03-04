@@ -35,6 +35,13 @@ for pred in predictions:
         rect = patches.Rectangle((bbox[0], bbox[1]), bbox[2] - bbox[0], bbox[3] - bbox[1], fill=False,
                                  edgecolor=colors[label], linewidth=2.5)
         ax.add_patch(rect)
+    for tag, ids in dect.prev_frame_ids.items():
+        for id in ids:
+            center = dect.all_centers[tag][id]
+            ax.text(*center[:2], str(id))
+    for bag_id, person_id in dect.bag_person_association.items():
+        pass
+
     set_resolution()
     plt.draw()
     plt.pause(0.001)
