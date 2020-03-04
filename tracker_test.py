@@ -31,6 +31,8 @@ for pred in predictions:
     bboxs = pred.pred_boxes.tensor.numpy()
     labels = pred.pred_classes.numpy()
     dect.update(boxes=bboxs, labels=labels)
+    ax.cla()
+    set_resolution()
     for bbox, label in zip(bboxs, labels):
         rect = patches.Rectangle((bbox[0], bbox[1]), bbox[2] - bbox[0], bbox[3] - bbox[1], fill=False,
                                  edgecolor=colors[label], linewidth=2.5)
@@ -40,13 +42,14 @@ for pred in predictions:
             center = dect.all_centers[tag][id]
             ax.text(*center[:2], str(id))
     for bag_id, person_id in dect.bag_person_association.items():
-        pass
+        if person_id is not None and dect.bag_person_dist[bag_id] < np.inf:
+            bag_center = dect.all_centers['bags'][bag_id][:2]
+            person_center = dect.all_centers['persons'][person_id][:2]
+            ax.arrow(*bag_center, *(person_center - bag_center))
 
-    set_resolution()
     plt.draw()
-    plt.pause(0.001)
-    input("Press enter to continue... ")
-    ax.cla()
+    plt.pause(0.1)
+    # input("Press enter to continue... ")
 
 # # In[42]:
 #
