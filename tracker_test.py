@@ -2,18 +2,44 @@
 # coding: utf-8
 
 
-
 import numpy as np
-import abandoned_bag_heuristic as abh
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 import pickle
+import time
+
+import abandoned_bag_heuristic as abh
 
 with open('predictions.pkl', 'rb') as fp:
     predictions = pickle.load(fp)
 
 dect = abh.SimpleTracker(150, 100)
+fig, ax = plt.subplots(1)
+
+
+def set_resolution():
+    ax.set(xlim=(0, 640), ylim=(0, 480))
+    ax.invert_yaxis()
+
+
+plt.ion()
+plt.show()
+
+colors = {0: 'r', 1: 'b'}
 
 for pred in predictions:
-    dect.update(boxes=pred.pred_boxes.tensor.numpy(), labels=pred.pred_classes.numpy())
+    bboxs = pred.pred_boxes.tensor.numpy()
+    labels = pred.pred_classes.numpy()
+    dect.update(boxes=bboxs, labels=labels)
+    for bbox, label in zip(bboxs, labels):
+        rect = patches.Rectangle((bbox[0], bbox[1]), bbox[2] - bbox[0], bbox[3] - bbox[1], fill=False,
+                                 edgecolor=colors[label], linewidth=2.5)
+        ax.add_patch(rect)
+    set_resolution()
+    plt.draw()
+    plt.pause(0.001)
+    input("Press enter to continue... ")
+    ax.cla()
 
 # # In[42]:
 #
@@ -85,7 +111,3 @@ for pred in predictions:
 # print(dect.prev_frame_ids)
 # print(dect.all_centers)
 #
-
-
-
-
