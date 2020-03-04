@@ -103,7 +103,7 @@ class SimpleTracker:
 
         if frame_ids:
             self.prev_frame_centers[tag] = new_centers
-            self.prev_frame_ids[tag] = np.array(frame_ids)
+            self.prev_frame_ids[tag] = frame_ids
         else:
             pass
             # self.prev_frame_ids[tag] = np.zeros((0,))
