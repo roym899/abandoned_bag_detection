@@ -55,6 +55,10 @@ class SimpleTracker:
                                'persons': 0}
         self.bag_person_thres = bag_person_thres
         self.self_association_thres = self_association_thres
+        self.prev_frame_kept = {'bags': False,
+                                'persons': False}
+        self.keep_frame_counter = {'bags': 0,
+                                   'persons': 0}
 
     def frame2frame_association(self, new_centers, tag):
         frame_ids = []
@@ -104,6 +108,17 @@ class SimpleTracker:
 
         if frame_ids:
             self.prev_frame_ids[tag] = frame_ids
+            self.prev_frame_kept[tag] = False
+            self.keep_frame_counter[tag] = 0
+        else:
+            self.keep_frame_counter[tag] += 1
+            if self.keep_frame_counter[tag] > 8:
+                for id in self.prev_frame_ids[tag]:
+                    self.all_centers[tag][id] = np.array([np.Inf, np.Inf, np.Inf])
+                self.prev_frame_ids[tag] = []
+                self.prev_frame_kept[tag] = False
+            else:
+                self.prev_frame_kept[tag] = True
 
         # print(frame_ids, self.prev_frame_ids[tag])
         # print(self.all_centers[tag])
@@ -129,6 +144,8 @@ class SimpleTracker:
         for person_id in self.prev_frame_ids['persons']:
             person_center = self.all_centers['persons'][person_id]
             dists.append(np.sqrt(np.power(person_center - bag_center, 2).sum()))
+        if not self.prev_frame_ids['persons']:
+            return None, float('inf')
         closest_person_ind = int(np.array(dists).argmin())
         if dists[closest_person_ind] < self.bag_person_thres:
             return self.prev_frame_ids['persons'][closest_person_ind], dists[closest_person_ind]
@@ -171,8 +188,19 @@ class SimpleTracker:
         self.update_bag_person_association()
         
         print(self.prev_frame_ids)
-        print(self.is_unattended())
 
-    def is_unattended(self):
-        distances = np.array([self.bag_person_dist[bag_id] for bag_id in self.prev_frame_ids['bags']])
-        return distances > self.bag_person_thres
+    def is_unattended(self, bag_id):
+        person_id = self.bag_person_association[bag_id]
+        if person_id is None:
+            return True
+        person_center = self.all_centers['persons'][person_id]
+        bag_center = self.all_centers['bags'][bag_id]
+        
+        if np.sqrt(((person_center-bag_center)**2).sum()) > self.bag_person_thres:
+            return True
+    
+        return False
+
+    # def is_unattended(self):
+    #     distances = np.array([self.bag_person_dist[bag_id] for bag_id in self.prev_frame_ids['bags']])
+    #     return distances > self.bag_person_thres

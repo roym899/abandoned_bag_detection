@@ -19,7 +19,7 @@ SAVED_PREDICTIONS = []
 
 import pickle
 
-def draw_instance_predictions(visualizer, frame, predictions):
+def draw_instance_predictions(visualizer, frame, predictions, tracker):
     """
     Draw instance-level prediction results on an image.
 
@@ -75,6 +75,33 @@ def draw_instance_predictions(visualizer, frame, predictions):
         assigned_colors=colors,
         alpha=alpha,
     )
+    
+    for bag_id in  tracker.prev_frame_ids['bags']:
+        bag_center = tracker.all_centers['bags'][bag_id]
+        if bag_id in tracker.bag_person_association: 
+            person_id = tracker.bag_person_association[bag_id]
+            if person_id is not None and person_id in tracker.prev_frame_ids['persons']:
+                person_center = tracker.all_centers['persons'][person_id]
+                
+                if tracker.is_unattended(bag_id):
+                    frame_visualizer.draw_line(
+                        [bag_center[0], person_center[0]], 
+                        [bag_center[1], person_center[1]], 
+                        'r'
+                    )
+                else:
+                    frame_visualizer.draw_line(
+                        [bag_center[0], person_center[0]], 
+                        [bag_center[1], person_center[1]], 
+                        'g'
+                    )
+    
+        if tracker.is_unattended(bag_id):
+            frame_visualizer.draw_text(
+                'abandoned',
+                tuple(bag_center[0:2]),
+                color='r'
+            )
 
     return frame_visualizer.output
 
@@ -94,7 +121,7 @@ class VisualizationDemo(object):
         self.instance_mode = instance_mode
 
         self.parallel = parallel
-        self.tracker = SimpleTracker(150, 100)
+        self.tracker = SimpleTracker(150, 200)
         if parallel:
             num_gpu = torch.cuda.device_count()
             self.predictor = AsyncPredictor(cfg, num_gpus=num_gpu)
@@ -173,7 +200,7 @@ class VisualizationDemo(object):
                             
                             
                             
-                vis_frame = draw_instance_predictions(video_visualizer, frame, predictions)
+                vis_frame = draw_instance_predictions(video_visualizer, frame, predictions, tracker)
                 
             elif "sem_seg" in predictions:
                 vis_frame = video_visualizer.draw_sem_seg(
