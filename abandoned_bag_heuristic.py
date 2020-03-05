@@ -5,10 +5,14 @@ from scipy.spatial.distance import cdist
 BAG_LABEL = 1
 PERSON_LABEL = 0
 
+# BAG_LABEL = 24
+# PERSON_LABEL = 0
+
 
 def split_bag_persons(centers, labels):
     assert isinstance(labels, np.ndarray)
     assert isinstance(centers, np.ndarray)
+    print(labels)
     bag_bounding_centers = centers[labels == BAG_LABEL]
     persons_bounding_centers = centers[labels == PERSON_LABEL]
 
