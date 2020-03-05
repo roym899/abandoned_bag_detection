@@ -169,6 +169,9 @@ class SimpleTracker:
         self.frame2frame_association(persons_bounding_centers, 'persons')
         self.frame2frame_association(bag_bounding_centers, 'bags')
         self.update_bag_person_association()
+        
+        print(self.prev_frame_ids)
+        print(self.is_unattended())
 
     def is_unattended(self):
         distances = np.array([self.bag_person_dist[bag_id] for bag_id in self.prev_frame_ids['bags']])

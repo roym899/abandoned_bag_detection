@@ -11,12 +11,72 @@ from abandoned_bag_heuristic import SimpleTracker
 from detectron2.data import MetadataCatalog
 from detectron2.engine.defaults import DefaultPredictor
 from detectron2.utils.video_visualizer import VideoVisualizer
+import detectron2.utils.video_visualizer
 from detectron2.utils.visualizer import ColorMode, Visualizer
 
 SAVE_PREDICTIONS = False
 SAVED_PREDICTIONS = []
 
 import pickle
+
+def draw_instance_predictions(visualizer, frame, predictions):
+    """
+    Draw instance-level prediction results on an image.
+
+    Args:
+        frame (ndarray): an RGB image of shape (H, W, C), in the range [0, 255].
+        predictions (Instances): the output of an instance detection/segmentation
+            model. Following fields will be used to draw:
+            "pred_boxes", "pred_classes", "scores", "pred_masks" (or "pred_masks_rle").
+
+    Returns:
+        output (VisImage): image object with visualizations.
+    """
+    frame_visualizer = Visualizer(frame, visualizer.metadata)
+    num_instances = len(predictions)
+    if num_instances == 0:
+        return frame_visualizer.output
+
+    boxes = predictions.pred_boxes.tensor.numpy() if predictions.has("pred_boxes") else None
+    scores = predictions.scores if predictions.has("scores") else None
+    classes = predictions.pred_classes.numpy() if predictions.has("pred_classes") else None
+    keypoints = predictions.pred_keypoints if predictions.has("pred_keypoints") else None
+
+    if predictions.has("pred_masks"):
+        masks = predictions.pred_masks
+        # mask IOU is not yet enabled
+        # masks_rles = mask_util.encode(np.asarray(masks.permute(1, 2, 0), order="F"))
+        # assert len(masks_rles) == num_instances
+    else:
+        masks = None
+
+    detected = [
+        detectron2.utils.video_visualizer._DetectedInstance(classes[i], boxes[i], mask_rle=None, color=None, ttl=8)
+        for i in range(num_instances)
+    ]
+    colors = visualizer._assign_colors(detected)
+
+    labels = detectron2.utils.video_visualizer._create_text_labels(classes, scores, visualizer.metadata.get("thing_classes", None))
+
+    if visualizer._instance_mode == ColorMode.IMAGE_BW:
+        # any() returns uint8 tensor
+        frame_visualizer.output.img = frame_visualizer._create_grayscale_image(
+            (masks.any(dim=0) > 0).numpy() if masks is not None else None
+        )
+        alpha = 0.3
+    else:
+        alpha = 0.5
+
+    frame_visualizer.overlay_instances(
+        boxes=None if masks is not None else boxes,  # boxes are a bit distracting
+        masks=masks,
+        labels=labels,
+        keypoints=keypoints,
+        assigned_colors=colors,
+        alpha=alpha,
+    )
+
+    return frame_visualizer.output
 
 class VisualizationDemo(object):
     def __init__(self, cfg, instance_mode=ColorMode.IMAGE, parallel=False):
@@ -110,7 +170,11 @@ class VisualizationDemo(object):
                         with open('predictions.pkl', 'wb') as fp:
                             pickle.dump(SAVED_PREDICTIONS, fp)
                             print('Saving done!')
-                vis_frame = video_visualizer.draw_instance_predictions(frame, predictions)
+                            
+                            
+                            
+                vis_frame = draw_instance_predictions(video_visualizer, frame, predictions)
+                
             elif "sem_seg" in predictions:
                 vis_frame = video_visualizer.draw_sem_seg(
                     frame, predictions["sem_seg"].argmax(dim=0).to(self.cpu_device)
