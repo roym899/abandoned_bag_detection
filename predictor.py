@@ -19,6 +19,7 @@ SAVED_PREDICTIONS = []
 
 import pickle
 
+
 def draw_instance_predictions(visualizer, frame, predictions, tracker):
     """
     Draw instance-level prediction results on an image.
@@ -56,7 +57,8 @@ def draw_instance_predictions(visualizer, frame, predictions, tracker):
     ]
     colors = visualizer._assign_colors(detected)
 
-    labels = detectron2.utils.video_visualizer._create_text_labels(classes, scores, visualizer.metadata.get("thing_classes", None))
+    labels = detectron2.utils.video_visualizer._create_text_labels(classes, scores,
+                                                                   visualizer.metadata.get("thing_classes", None))
 
     if visualizer._instance_mode == ColorMode.IMAGE_BW:
         # any() returns uint8 tensor
@@ -75,27 +77,27 @@ def draw_instance_predictions(visualizer, frame, predictions, tracker):
         assigned_colors=colors,
         alpha=alpha,
     )
-    
-    for bag_id in  tracker.prev_frame_ids['bags']:
+
+    for bag_id in tracker.prev_frame_ids['bags']:
         bag_center = tracker.all_centers['bags'][bag_id]
-        if bag_id in tracker.bag_person_association: 
+        if bag_id in tracker.bag_person_association:
             person_id = tracker.bag_person_association[bag_id]
             if person_id is not None and person_id in tracker.prev_frame_ids['persons']:
                 person_center = tracker.all_centers['persons'][person_id]
-                
+
                 if tracker.is_unattended(bag_id):
                     frame_visualizer.draw_line(
-                        [bag_center[0], person_center[0]], 
-                        [bag_center[1], person_center[1]], 
+                        [bag_center[0], person_center[0]],
+                        [bag_center[1], person_center[1]],
                         'r'
                     )
                 else:
                     frame_visualizer.draw_line(
-                        [bag_center[0], person_center[0]], 
-                        [bag_center[1], person_center[1]], 
+                        [bag_center[0], person_center[0]],
+                        [bag_center[1], person_center[1]],
                         'g'
                     )
-    
+
         if tracker.is_unattended(bag_id):
             frame_visualizer.draw_text(
                 'abandoned',
@@ -104,6 +106,7 @@ def draw_instance_predictions(visualizer, frame, predictions, tracker):
             )
 
     return frame_visualizer.output
+
 
 class VisualizationDemo(object):
     def __init__(self, cfg, instance_mode=ColorMode.IMAGE, parallel=False):
@@ -197,11 +200,9 @@ class VisualizationDemo(object):
                         with open('predictions.pkl', 'wb') as fp:
                             pickle.dump(SAVED_PREDICTIONS, fp)
                             print('Saving done!')
-                            
-                            
-                            
+
                 vis_frame = draw_instance_predictions(video_visualizer, frame, predictions, tracker)
-                
+
             elif "sem_seg" in predictions:
                 vis_frame = video_visualizer.draw_sem_seg(
                     frame, predictions["sem_seg"].argmax(dim=0).to(self.cpu_device)
