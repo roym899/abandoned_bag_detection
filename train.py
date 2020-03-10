@@ -3,9 +3,10 @@ from detectron2 import model_zoo
 from detectron2.config import get_cfg
 from detectron2.engine import DefaultTrainer
 
-
-register_coco_instances("person_bag_train", {}, "/home/leo/datasets/person_bag/annotations/train.json", "/home/leo/datasets/person_bag/images/train/")
-register_coco_instances("person_bag_val", {}, "/home/leo/datasets/person_bag/annotations/val.json", "/home/leo/datasets/person_bag/images/val/")
+register_coco_instances("person_bag_train", {}, "/home/leo/datasets/person_bag/annotations/train.json",
+                        "/home/leo/datasets/person_bag/images/train/")
+register_coco_instances("person_bag_val", {}, "/home/leo/datasets/person_bag/annotations/val.json",
+                        "/home/leo/datasets/person_bag/images/val/")
 
 cfg = get_cfg()
 # add project-specific config (e.g., TensorMask) here if you're not running a model in detectron2's core library
@@ -18,7 +19,7 @@ cfg.DATASETS.TRAIN = ("person_bag_train",)
 cfg.DATASETS.TEST = ("person_bag_val",)
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = 2  # only has two classes (person and bag)
 cfg.SOLVER.IMS_PER_BATCH = 2
-cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 32   # faster, and good enough for this toy dataset (default: 512)
-trainer = DefaultTrainer(cfg) 
+cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 32  # faster, and good enough for this toy dataset (default: 512)
+trainer = DefaultTrainer(cfg)
 trainer.resume_or_load(resume=False)
 trainer.train()
