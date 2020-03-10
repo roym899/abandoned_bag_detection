@@ -21,8 +21,10 @@ WINDOW_NAME = "COCO detections"
 
 PERSON_BAG_META = {"thing_classes": ["person", "bag"]}
 
-register_coco_instances("person_bag_train", PERSON_BAG_META, "/home/leo/datasets/person_bag/annotations/train.json", "/home/leo/datasets/person_bag/images/train/")
-register_coco_instances("person_bag_val", PERSON_BAG_META, "/home/leo/datasets/person_bag/annotations/val.json", "/home/leo/datasets/person_bag/images/val/")
+register_coco_instances("person_bag_train", PERSON_BAG_META, "/home/leo/datasets/person_bag/annotations/train.json",
+                        "/home/leo/datasets/person_bag/images/train/")
+register_coco_instances("person_bag_val", PERSON_BAG_META, "/home/leo/datasets/person_bag/annotations/val.json",
+                        "/home/leo/datasets/person_bag/images/val/")
 
 
 def setup_cfg(args):
@@ -54,7 +56,7 @@ def get_parser():
     parser.add_argument(
         "--output",
         help="A file or directory to save output visualizations. "
-        "If not given, will show output in an OpenCV window.",
+             "If not given, will show output in an OpenCV window.",
     )
 
     parser.add_argument(
