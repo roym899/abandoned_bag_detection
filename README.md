@@ -100,12 +100,16 @@ For training one first has to download [MS COCO](http://cocodataset.org/#home) a
 For MS COCO you will need the 2017 train and val images, and the 2017 annotations. This are found on [the MS COCO downloads page.](http://cocodataset.org/#download) Note that the data is more than 20 Gb so you might want to use `gsutil rsync` as suggested in the downloads page. The ADE20K dataset is packaged all into one zip-file of around ~4 Gb.
 
 Make a folder inside "my-project-folder" called "datasets" and extract MS COCO and ADE20K into seperate subfolders inside "datasets".
-*After ensuring that the paths are correct* you can run **filter_datasets.py** from within the abandoned_bag_detection folder.
+First we need to use the Dataset-Converters to convert the ADE20K format to MS COCO format. For this run
 ```
 # Ensure you are in the directory abandoned_bag_detection
+python Dataset-Converters/convert.py -i <path_to_folder_ADE20K> -o <output_path> -I ADE20K -O COCO --copy
+```
+where you replace `<path_to_folder_ADE20K>` and `<output_path>` with the suitable paths, from inside the abandoned_bag_detection directory.
+*After ensuring that the paths are correct* you can run **filter_datasets.py** to create a merged dataset with only *person* and *bag* classes:
+```
 python filter_datasets.py
 ```
-This will merge the MS COCO and ADE20K datasets into one as well as filter out any classes which are not *person* or *bag*.
 
 With this done, you can now run the training script to train a new model on the joint data:
 ```
