@@ -48,19 +48,31 @@ Clone the project and go into the project directory
 git clone git@github.com:roym899/abandoned_bag_detection.git
 cd abandoned_bag_detection
 ```
-Install all the necessary python packages using
+Install necessary python packages using
 ```
-pip install -r requirements_cpu.txt
+pip install -r requirements.txt
 ```
-OR
+Next we you need to install [Pytorch](https://pytorch.org/). You can use:
 ```
-pip install -r requirements_gpu.txt
+pip install torch torchvision
 ```
-. If you went with the GPU supported installation you can verify your setup by running
+for CUDA 10.1 compatible installation in Linux or
+```
+pip install torch==1.4.0+cpu torchvision==0.5.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
+```
+for a Linux CPU only installation.
+For any other setup consult the [Pytorch installation page](https://pytorch.org/).
+
+If you went with the GPU supported installation you can verify your setup by running
 ```
 python -c 'import torch; from torch.utils.cpp_extension import CUDA_HOME; print(torch.cuda.is_available(), CUDA_HOME)'
 ```
 . This should print `True` and the path to your CUDA 10.1 installation.
+
+Before installing Detectron2 you also need to install pycocotools using
+```
+pip install -U 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI'
+```
 
 #### Detectron2
 
@@ -88,12 +100,16 @@ For training one first has to download [MS COCO](http://cocodataset.org/#home) a
 For MS COCO you will need the 2017 train and val images, and the 2017 annotations. This are found on [the MS COCO downloads page.](http://cocodataset.org/#download) Note that the data is more than 20 Gb so you might want to use `gsutil rsync` as suggested in the downloads page. The ADE20K dataset is packaged all into one zip-file of around ~4 Gb.
 
 Make a folder inside "my-project-folder" called "datasets" and extract MS COCO and ADE20K into seperate subfolders inside "datasets".
-*After ensuring that the paths are correct* you can run **filter_datasets.py** from within the abandoned_bag_detection folder.
+First we need to use the Dataset-Converters to convert the ADE20K format to MS COCO format. For this run
 ```
 # Ensure you are in the directory abandoned_bag_detection
+python Dataset-Converters/convert.py -i <path_to_folder_ADE20K> -o <output_path> -I ADE20K -O COCO --copy
+```
+where you replace `<path_to_folder_ADE20K>` and `<output_path>` with the suitable paths, from inside the abandoned_bag_detection directory.
+*After ensuring that the paths are correct* you can run **filter_datasets.py** to create a merged dataset with only *person* and *bag* classes:
+```
 python filter_datasets.py
 ```
-This will merge the MS COCO and ADE20K datasets into one as well as filter out any classes which are not *person* or *bag*.
 
 With this done, you can now run the training script to train a new model on the joint data:
 ```
