@@ -7,7 +7,7 @@ from tqdm import tqdm
 OUTPUT_FOLDER = './datasets/person_bag'
 DATASETS = ['ADE20K', 'COCO']
 SPLITS = ['train', 'val']
-ADE20K_FOLDER = './datasets/ADE20K_coco'
+ADE20K_FOLDER = './datasets/ade20k_coco'
 COCO_FOLDER = './datasets/coco'
 PERSON_ID = 1
 BAG_ID = 2

@@ -34,30 +34,30 @@ CUDA installation can become a major headache on some systems so it is recommend
 
 ### Installation 
 Start by creating a new fodler to contain the project and the detectron2 installation.
-```
+```bash
 mkdir my-project-folder
 cd my-project-folder
 ```
 (Optional) Create a new virtualenv to contain the required python packages
-```
+```bash
 python3 -m virtualenv venv
 source venv/bin/activate
 ```
 Clone the project and go into the project directory
-```
+```bash
 git clone git@github.com:roym899/abandoned_bag_detection.git
 cd abandoned_bag_detection
 ```
 Install necessary python packages using
-```
+```bash
 pip install -r requirements.txt
 ```
 Next we you need to install [Pytorch](https://pytorch.org/). You can use:
-```
+```bash
 pip install torch torchvision
 ```
 for CUDA 10.1 compatible installation in Linux or
-```
+```bash
 pip install torch==1.4.0+cpu torchvision==0.5.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
 ```
 for a Linux CPU only installation.
@@ -70,14 +70,14 @@ python -c 'import torch; from torch.utils.cpp_extension import CUDA_HOME; print(
 . This should print `True` and the path to your CUDA 10.1 installation.
 
 Before installing Detectron2 you also need to install pycocotools using
-```
+```bash
 pip install -U 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI'
 ```
 
 #### Detectron2
 
 Next we navigate back to my-project-folder and install detectron2 as follows:
-```
+```bash
 cd ..  # Now you should be in my-project-folder
 git clone https://github.com/facebookresearch/detectron2.git
 cd detectron2 && python -m pip install -e .
@@ -86,7 +86,7 @@ cd detectron2 && python -m pip install -e .
 #### Dataset-Converters
 
 For combining the MS COCO dataset with ADE20K with a unified format, [Dataset-Converters](https://github.com/ISSResearch/Dataset-Converters) is used. It is linked with our repo as a submodule and can be installed by navigating back into the abandinged_bag_detection directory and running the following git commands below.
-```
+```bash
 cd ../abandoned_bag_detection
 git submodule init
 git submodule update
@@ -99,23 +99,43 @@ Now everything should be installed and ready to go!
 For training one first has to download [MS COCO](http://cocodataset.org/#home) and [ADE20K](https://groups.csail.mit.edu/vision/datasets/ADE20K/).
 For MS COCO you will need the 2017 train and val images, and the 2017 annotations. This are found on [the MS COCO downloads page.](http://cocodataset.org/#download) Note that the data is more than 20 Gb so you might want to use `gsutil rsync` as suggested in the downloads page. The ADE20K dataset is packaged all into one zip-file of around ~4 Gb.
 
+All scripts assume the dataset to be in abandoned_bag_detection/datasets/. After downloading and extracting the datasets the folder structure should look like this:
+```
+<abandoned_bag_detection>/datasets/ade20k/
+<abandoned_bag_detection>/datasets/ade20k/images
+<abandoned_bag_detection>/datasets/ade20k/index_ade20k.mat
+<abandoned_bag_detection>/datasets/coco/annotations
+<abandoned_bag_detection>/datasets/coco/annotations/instances_train2017.json
+<abandoned_bag_detection>/datasets/coco/annotations/instances_val2017.json
+<abandoned_bag_detection>/datasets/coco/images
+<abandoned_bag_detection>/datasets/coco/images/train2017/
+<abandoned_bag_detection>/datasets/coco/images/val2017/
+```
+If you have your datasets in a centralized folder you can create a symbolic link to said folder with
+```bash
+ln -s dataset_folder <abandoned_bag_detection>/datasets
+```
+
 Make a folder inside "my-project-folder" called "datasets" and extract MS COCO and ADE20K into seperate subfolders inside "datasets".
 First we need to use the Dataset-Converters to convert the ADE20K format to MS COCO format. For this run
-```
+```bash
 # Ensure you are in the directory abandoned_bag_detection
 python Dataset-Converters/convert.py -i <path_to_folder_ADE20K> -o <output_path> -I ADE20K -O COCO --copy
 ```
-where you replace `<path_to_folder_ADE20K>` and `<output_path>` with the suitable paths, from inside the abandoned_bag_detection directory.
+where you replace `<path_to_folder_ADE20K>` and `<output_path>` with the suitable paths, from inside the abandoned_bag_detection directory. `<output_path>` should be `<abandoned_bag_detection>/datasets/ade20k_coco`, otherwise `filter_datasets.py` has to be adjusted.
 *After ensuring that the paths are correct* you can run **filter_datasets.py** to create a merged dataset with only *person* and *bag* classes:
-```
+```bsh
 python filter_datasets.py
 ```
 
 With this done, you can now run the training script to train a new model on the joint data:
-```
+```bash
 python train.py
 ```
-After training you should find a .pkl file containing the weights of the trained model.
+After training you should find a .pth file containing the weights of the trained model inside the output directory (`<abandoned_bag_detection>/output/model_final.pth`).
 
 ### Running the abandoned bag detector
-*Do we have a simple way of doing this at the moment?*
+The final model can be run together with the heuristic by running the `run_finetuned_model.sh` bash script, i.e., 
+```bash
+source run_finetuned_model.sh
+```
