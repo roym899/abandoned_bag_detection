@@ -7,7 +7,6 @@ cityscapesScripts==1.3.1
 cloudpickle==1.3.0
 cycler==0.10.0
 Cython==0.29.15
--e git+https://github.com/facebookresearch/detectron2.git@eb1013b2f97f9a4440ae8beec44d990387418ccf#egg=detectron2
 dicttoxml==1.7.4
 future==0.18.2
 fvcore==0.1.dev200308
