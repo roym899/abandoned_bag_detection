@@ -7,10 +7,10 @@ from detectron2.config import get_cfg
 from detectron2.engine import DefaultTrainer
 from torch import cuda
 
-register_coco_instances("person_bag_train", {}, "/home/leo/datasets/person_bag/annotations/train.json",
-                        "/home/leo/datasets/person_bag/images/train/")
-register_coco_instances("person_bag_val", {}, "/home/leo/datasets/person_bag/annotations/val.json",
-                        "/home/leo/datasets/person_bag/images/val/")
+register_coco_instances("person_bag_train", {}, "./datasets/person_bag/annotations/train.json",
+                        "./datasets/person_bag/images/train/")
+register_coco_instances("person_bag_val", {}, "./datasets/person_bag/annotations/val.json",
+                        "./datasets/person_bag/images/val/")
 
 cfg = get_cfg()
 # add project-specific config (e.g., TensorMask) here if you're not running a model in detectron2's core library

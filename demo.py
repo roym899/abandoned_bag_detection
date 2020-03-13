@@ -13,6 +13,7 @@ from detectron2.data.datasets import register_coco_instances
 from detectron2.config import get_cfg
 from detectron2.data.detection_utils import read_image
 from detectron2.utils.logger import setup_logger
+from detectron2 import model_zoo
 
 from predictor import VisualizationDemo
 
@@ -21,16 +22,16 @@ WINDOW_NAME = "COCO detections"
 
 PERSON_BAG_META = {"thing_classes": ["person", "bag"]}
 
-register_coco_instances("person_bag_train", PERSON_BAG_META, "/home/leo/datasets/person_bag/annotations/train.json",
-                        "/home/leo/datasets/person_bag/images/train/")
-register_coco_instances("person_bag_val", PERSON_BAG_META, "/home/leo/datasets/person_bag/annotations/val.json",
-                        "/home/leo/datasets/person_bag/images/val/")
+register_coco_instances("person_bag_train", PERSON_BAG_META, "./datasets/person_bag/annotations/train.json",
+                        "./datasets/person_bag/images/train/")
+register_coco_instances("person_bag_val", PERSON_BAG_META, "./datasets/person_bag/annotations/val.json",
+                        "./datasets/person_bag/images/val/")
 
 
 def setup_cfg(args):
     # load config from file and command-line arguments
     cfg = get_cfg()
-    cfg.merge_from_file(args.config_file)
+    cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml"))
     cfg.merge_from_list(args.opts)
     # Set score_threshold for builtin models
     cfg.MODEL.RETINANET.SCORE_THRESH_TEST = args.confidence_threshold
@@ -44,13 +45,7 @@ def setup_cfg(args):
 
 def get_parser():
     parser = argparse.ArgumentParser(description="Detectron2 demo for builtin models")
-    parser.add_argument(
-        "--config-file",
-        default="configs/quick_schedules/mask_rcnn_R_50_FPN_inference_acc_test.yaml",
-        metavar="FILE",
-        help="path to config file",
-    )
-    parser.add_argument("--webcam", action="store_true", help="Take inputs from webcam.")
+    parser.add_argument("--webcam", type=int, help="Take inputs from webcam.")
     parser.add_argument("--video-input", help="Path to video file.")
     parser.add_argument("--input", nargs="+", help="A list of space separated input images")
     parser.add_argument(
@@ -113,9 +108,9 @@ if __name__ == "__main__":
                 cv2.imshow(WINDOW_NAME, visualized_output.get_image()[:, :, ::-1])
                 if cv2.waitKey(0) == 27:
                     break  # esc to quit
-    elif args.webcam:
+    elif type(args.webcam) == int:
         assert args.input is None, "Cannot have both --input and --webcam!"
-        cam = cv2.VideoCapture(1)
+        cam = cv2.VideoCapture(args.webcam)
         for vis in tqdm.tqdm(demo.run_on_video(cam)):
             cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
             cv2.imshow(WINDOW_NAME, vis)

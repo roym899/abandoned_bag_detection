@@ -4,11 +4,11 @@ from shutil import copy
 
 from tqdm import tqdm
 
-OUTPUT_FOLDER = '/home/semaiov/Documents/cvenv/ws/datasets/person_bag'
+OUTPUT_FOLDER = './datasets/person_bag'
 DATASETS = ['ADE20K', 'COCO']
 SPLITS = ['train', 'val']
-ADE20K_FOLDER = '/home/semaiov/Documents/cvenv/ws/datasets/ADE20K_coco'
-COCO_FOLDER = '/home/semaiov/Documents/cvenv/ws/datasets/coco'
+ADE20K_FOLDER = './datasets/ADE20K_coco'
+COCO_FOLDER = './datasets/coco'
 PERSON_ID = 1
 BAG_ID = 2
 
