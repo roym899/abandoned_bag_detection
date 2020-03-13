@@ -5,6 +5,7 @@ from detectron2.data.datasets import register_coco_instances
 from detectron2 import model_zoo
 from detectron2.config import get_cfg
 from detectron2.engine import DefaultTrainer
+from torch import cuda
 
 register_coco_instances("person_bag_train", {}, "/home/leo/datasets/person_bag/annotations/train.json",
                         "/home/leo/datasets/person_bag/images/train/")
@@ -23,6 +24,9 @@ cfg.DATASETS.TEST = ("person_bag_val",)
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = 2  # only has two classes (person and bag)
 cfg.SOLVER.IMS_PER_BATCH = 2
 cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 32  # faster, and good enough for this toy dataset (default: 512)
+if not cuda.is_available():
+  cfg.MODEL.DEVICE = "cpu"
+
 trainer = DefaultTrainer(cfg)
 trainer.resume_or_load(resume=False)
 trainer.train()
