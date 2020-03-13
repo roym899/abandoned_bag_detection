@@ -48,19 +48,31 @@ Clone the project and go into the project directory
 git clone git@github.com:roym899/abandoned_bag_detection.git
 cd abandoned_bag_detection
 ```
-Install all the necessary python packages using
+Install necessary python packages using
 ```
-pip install -r requirements_cpu.txt
+pip install -r requirements.txt
 ```
-OR
+Next we you need to install [Pytorch](https://pytorch.org/). You can use:
 ```
-pip install -r requirements_gpu.txt
+pip install torch torchvision
 ```
-. If you went with the GPU supported installation you can verify your setup by running
+for CUDA 10.1 compatible installation in Linux or
+```
+pip install torch==1.4.0+cpu torchvision==0.5.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
+```
+for a Linux CPU only installation.
+For any other setup consult the [Pytorch installation page](https://pytorch.org/).
+
+If you went with the GPU supported installation you can verify your setup by running
 ```
 python -c 'import torch; from torch.utils.cpp_extension import CUDA_HOME; print(torch.cuda.is_available(), CUDA_HOME)'
 ```
 . This should print `True` and the path to your CUDA 10.1 installation.
+
+Before installing Detectron2 you also need to install pycocotools using
+```
+pip install -U 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI'
+```
 
 #### Detectron2
 
