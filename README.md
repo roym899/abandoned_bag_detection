@@ -102,4 +102,4 @@ python train.py
 After training you should find a .pkl file containing the weights of the trained model.
 
 ### Running the abandoned bag detector
-* Do we have a simple way of doing this at the moment? *
+*Do we have a simple way of doing this at the moment?*
