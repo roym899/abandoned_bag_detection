@@ -4,15 +4,15 @@
 
 ### Overview
 The aim of this project is to create a computer vision system able to detect abandoned bags in a video stream.
-The algorithm has to main components:
+The algorithm has two main components:
   - A neural network able to detect persons and bags in a single frame
-  - A simple tracker which keps track of person and bag identities and associates bags with persons.
+  - A simple tracker which keeps track of person and bag identities and associates bags with persons.
 
-The system marks a detected bag as abandoned if the bag is without an owner or the assoiciated owner is to far away from the bag.
+The system marks a detected bag as abandoned if the bag is without an owner or the assoiciated owner is too far away from the bag.
 
 #### Person and bag detection
 The detection algrithm is a [Faster R-CNN](https://arxiv.org/abs/1506.01497) neural network with a [ResNet101](https://arxiv.org/abs/1512.03385) backbone.
-The model is implemented in the [Detectron2 framework](https://github.com/facebookresearch/detectron2) and it comes pretrained on MS COCO.
+The model is implemented in the [Detectron2 framework](https://github.com/facebookresearch/detectron2) and is pretrained on MS COCO.
 To improve the detection algorithm, we combine the [MS COCO dataset](http://cocodataset.org/#home) with the [ADE20K dataset](https://groups.csail.mit.edu/vision/datasets/ADE20K/) and fine-tune the model by training it to detect only two classes: persons and bags. 
 
 #### The association
@@ -85,7 +85,7 @@ cd detectron2 && python -m pip install -e .
 
 #### Dataset-Converters
 
-For combining the MS COCO dataset with ADE20K with a unified format, [Dataset-Converters](https://github.com/ISSResearch/Dataset-Converters) is used. It is linked with our repo as a submodule and can be installed by navigating back into the abandinged_bag_detection directory and running the following git commands below.
+For combining the MS COCO dataset with ADE20K with a unified format, [Dataset-Converters](https://github.com/ISSResearch/Dataset-Converters) is used. It is linked with our repo as a submodule and can be installed by navigating back into the abandinged_bag_detection directory and running the following git commands:
 ```bash
 cd ../abandoned_bag_detection
 git submodule init
@@ -96,8 +96,8 @@ Now everything should be installed and ready to go!
 
 
 ### Training and Dataset fusion
-For the training one first has to download [MS COCO](http://cocodataset.org/#home) and [ADE20K](https://groups.csail.mit.edu/vision/datasets/ADE20K/).
-For MS COCO you will need the 2017 train and val images, and the 2017 annotations. This are found on [the MS COCO downloads page.](http://cocodataset.org/#download) Note that the data is more than 20 GB so you might want to use `gsutil rsync` as suggested in the downloads page. The ADE20K dataset is packaged all into one zip-file of around ~4 GB.
+For training one first has to download [MS COCO](http://cocodataset.org/#home) and [ADE20K](https://groups.csail.mit.edu/vision/datasets/ADE20K/).
+For MS COCO you will need the 2017 train and val images, and the 2017 annotations. This are found on [the MS COCO downloads page.](http://cocodataset.org/#download) Note that the data is more than 20 Gb so you might want to use `gsutil rsync` as suggested in the downloads page. The ADE20K dataset is packaged all into one zip-file of around ~4 Gb.
 
 All scripts assume the dataset to be in abandoned_bag_detection/datasets/. After downloading and extracting the datasets the folder structure should look like this:
 ```
@@ -116,14 +116,13 @@ If you have your datasets in a centralized folder you can create a symbolic link
 ln -s dataset_folder <abandoned_bag_detection>/datasets
 ```
 
-Make a folder inside "my-project-folder" called "datasets" and extract MS COCO and ADE20K into seperate subfolders inside "datasets".
 First we need to use the Dataset-Converters to convert the ADE20K format to MS COCO format. For this run
 ```bash
 # Ensure you are in the directory abandoned_bag_detection
 python Dataset-Converters/convert.py -i <path_to_folder_ADE20K> -o <output_path> -I ADE20K -O COCO --copy
 ```
 where you replace `<path_to_folder_ADE20K>` and `<output_path>` with the suitable paths, from inside the abandoned_bag_detection directory. `<output_path>` should be `<abandoned_bag_detection>/datasets/ade20k_coco`, otherwise `filter_datasets.py` has to be adjusted.
-*After ensuring that the paths are correct* you can run **filter_datasets.py** to create a merged dataset with only *person* and *bag* classes:
+After ADE20K has been converted to COCO format, you can run **filter_datasets.py** to create a merged dataset with only *person* and *bag* classes:
 ```bsh
 python filter_datasets.py
 ```
@@ -132,7 +131,7 @@ With this done, you can now run the training script to train a new model on the 
 ```bash
 python train.py
 ```
-After the training you should find a .pth file containing the weights of the trained model inside the output directory (`<abandoned_bag_detection>/output/model_final.pth`).
+After training you should find a .pth file containing the weights of the trained model inside the output directory (`<abandoned_bag_detection>/output/model_final.pth`).
 
 ### Running the abandoned bag detector
 The final model can be run together with the heuristic by running the `run_finetuned_model.sh` bash script, i.e., 
