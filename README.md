@@ -5,14 +5,14 @@
 ### Overview
 The aim of this project is to create a computer vision system able to detect abandoned bags in a video stream.
 The algorithm has to main components:
-  - A neural network able to detect persons and bags in a single fram
+  - A neural network able to detect persons and bags in a single frame
   - A simple tracker which keps track of person and bag identities and associates bags with persons.
 
 The system marks a detected bag as abandoned if the bag is without an owner or the assoiciated owner is to far away from the bag.
 
 #### Person and bag detection
 The detection algrithm is a [Faster R-CNN](https://arxiv.org/abs/1506.01497) neural network with a [ResNet101](https://arxiv.org/abs/1512.03385) backbone.
-The model is implemented in the [Detectron2 framework](https://github.com/facebookresearch/detectron2) and comes with pretrained on MS COCO.
+The model is implemented in the [Detectron2 framework](https://github.com/facebookresearch/detectron2) and it comes pretrained on MS COCO.
 To improve the detection algorithm, we combine the [MS COCO dataset](http://cocodataset.org/#home) with the [ADE20K dataset](https://groups.csail.mit.edu/vision/datasets/ADE20K/) and fine-tune the model by training it to detect only two classes: persons and bags. 
 
 #### The association
@@ -96,8 +96,8 @@ Now everything should be installed and ready to go!
 
 
 ### Training and Dataset fusion
-For training one first has to download [MS COCO](http://cocodataset.org/#home) and [ADE20K](https://groups.csail.mit.edu/vision/datasets/ADE20K/).
-For MS COCO you will need the 2017 train and val images, and the 2017 annotations. This are found on [the MS COCO downloads page.](http://cocodataset.org/#download) Note that the data is more than 20 Gb so you might want to use `gsutil rsync` as suggested in the downloads page. The ADE20K dataset is packaged all into one zip-file of around ~4 Gb.
+For the training one first has to download [MS COCO](http://cocodataset.org/#home) and [ADE20K](https://groups.csail.mit.edu/vision/datasets/ADE20K/).
+For MS COCO you will need the 2017 train and val images, and the 2017 annotations. This are found on [the MS COCO downloads page.](http://cocodataset.org/#download) Note that the data is more than 20 GB so you might want to use `gsutil rsync` as suggested in the downloads page. The ADE20K dataset is packaged all into one zip-file of around ~4 GB.
 
 All scripts assume the dataset to be in abandoned_bag_detection/datasets/. After downloading and extracting the datasets the folder structure should look like this:
 ```
@@ -132,7 +132,7 @@ With this done, you can now run the training script to train a new model on the 
 ```bash
 python train.py
 ```
-After training you should find a .pth file containing the weights of the trained model inside the output directory (`<abandoned_bag_detection>/output/model_final.pth`).
+After the training you should find a .pth file containing the weights of the trained model inside the output directory (`<abandoned_bag_detection>/output/model_final.pth`).
 
 ### Running the abandoned bag detector
 The final model can be run together with the heuristic by running the `run_finetuned_model.sh` bash script, i.e., 
