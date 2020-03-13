@@ -27,7 +27,7 @@ cfg.DATASETS.TEST = ("person_bag_val",)
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = 2  # only has two classes (person and bag)
 cfg.SOLVER.IMS_PER_BATCH = 2
 cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 32
-cfg.SOLVER.MAX_ITER = 300
+cfg.SOLVER.MAX_ITER = 80000
 if not cuda.is_available():
   cfg.MODEL.DEVICE = "cpu"
   
