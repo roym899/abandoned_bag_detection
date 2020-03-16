@@ -144,5 +144,5 @@ If you don't plan to run the training, can use the weights of our self trained m
 ```bash
 source run_trained_finetuned_model.sh
 ```
-- To run on cpu, add `MODEL.DEVICE cpu` after `--opts` in `run_trained_finetuned_model.sh` or `run_finetuned_model.sh` bash scripts. 
+To run on cpu, add `MODEL.DEVICE cpu` after `--opts` in `run_trained_finetuned_model.sh` or `run_finetuned_model.sh` bash scripts. 
 
