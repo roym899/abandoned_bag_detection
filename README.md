@@ -140,3 +140,8 @@ The final model can be run together with the heuristic by running the `run_finet
 ```bash
 source run_finetuned_model.sh
 ```
+If you don't plan to run the training, can use the weights of our trained model to run the demo derictly by running the `run_trained_finetuned_model.sh` bash script, i.e., 
+```bash
+source run_trained_finetuned_model.sh
+```
+PS. To run on cpu, add `MODEL.DEVICE cpu` after `--opts.`in `run_trained_finetuned_model.sh` or `run_finetuned_model.sh`.
