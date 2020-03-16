@@ -9,6 +9,7 @@ The algorithm has two main components:
   - A simple tracker which keeps track of person and bag identities and associates bags with persons.
 
 The system marks a detected bag as abandoned if the bag is without an owner or the assoiciated owner is too far away from the bag.
+![image](https://github.com/roym899/abandoned_bag_detection/blob/master/abandoned_bag_detection.gif)
 
 #### Person and bag detection
 The detection algrithm is a [Faster R-CNN](https://arxiv.org/abs/1506.01497) neural network with a [ResNet101](https://arxiv.org/abs/1512.03385) backbone.
