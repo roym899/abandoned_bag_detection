@@ -1,6 +1,6 @@
 # Abandoned Bag Detection
 ## WASP Autonomous Systems 1 project 2020
-*By Leonard Burns, Ciwan Ceylan, Matteo Iovino and Xiaomeng "Mandy" Zhu*
+*By Leonard Burns, Ciwan Ceylan, Matteo Iovino and Xiaomeng (Mandy) Zhu*
 
 ### Overview
 The aim of this project is to create a computer vision system able to detect abandoned bags in a video stream.
