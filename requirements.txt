@@ -20,7 +20,7 @@ matplotlib==3.2.0
 numpy==1.21.0
 oauthlib==3.1.0
 opencv-python==4.2.0.32
-Pillow==9.0.0
+Pillow==9.0.1
 portalocker==1.5.2
 protobuf==3.15.0
 pyasn1==0.4.8
